@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIZENT · 주식회사 에이전트</title>
+<meta name="description" content="돌봄 현장을 디지털 헬스케어 허브로. 온디바이스 AI 스마트워커를 만드는 주식회사 에이전트(AIZENT).">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/galmuri.css">
+<style>
+  :root {
+    --bg: #14102a;
+    --panel: #221c45;
+    --ink: #f4f1ff;
+    --dim: #a9a2d6;
+    --hi: #ffd84a;
+    --hp: #53e07a;
+    --mp: #4ac8ff;
+    --hot: #ff5c8a;
+    --line: #6b5fd1;
+    --px: 4px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Galmuri11", "Galmuri9", monospace;
+    line-height: 1.7;
+    image-rendering: pixelated;
+  }
+  body::after {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(to bottom, rgba(0,0,0,.18) 0 2px, transparent 2px 4px);
+  }
+  a { color: var(--hi); }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px; }
+
+  /* 타이틀 화면 */
+  .title {
+    min-height: 100vh;
+    display: grid; place-items: center; text-align: center;
+    padding: 48px 16px;
+  }
+  .logo {
+    font-family: "Galmuri14", "Galmuri11", monospace;
+    font-size: clamp(40px, 12vw, 88px);
+    letter-spacing: 6px;
+    margin: 0;
+    color: var(--hi);
+    text-shadow: var(--px) var(--px) 0 var(--hot), calc(var(--px) * 2) calc(var(--px) * 2) 0 #000;
+  }
+  .corp { margin: 8px 0 32px; color: var(--dim); font-size: 16px; }
+  .msg {
+    display: inline-block;
+    border: var(--px) solid var(--ink);
+    padding: 12px 20px;
+    font-size: clamp(16px, 4vw, 22px);
+    background: var(--panel);
+    box-shadow: var(--px) var(--px) 0 #000;
+  }
+  .sprite { width: 160px; height: auto; margin: 36px auto 24px; display: block; }
+  .start {
+    display: inline-block; margin-top: 8px;
+    color: var(--ink); text-decoration: none; font-size: 18px;
+    animation: blink 1s steps(2, start) infinite;
+  }
+  @keyframes blink { to { visibility: hidden; } }
+
+  /* 공통 창 */
+  section.stage { padding: 56px 0; }
+  .label { color: var(--hot); font-size: 14px; letter-spacing: 2px; margin: 0 0 6px; }
+  h2 { font-family: "Galmuri14", "Galmuri11", monospace; font-size: clamp(22px, 5vw, 30px); margin: 0 0 20px; }
+  .window {
+    background: var(--panel);
+    border: var(--px) solid var(--line);
+    box-shadow: var(--px) var(--px) 0 #000;
+    padding: 20px;
+  }
+  .window + .window { margin-top: 16px; }
+  .window h3 { margin: 0 0 8px; color: var(--hi); font-size: 18px; }
+  .window p { margin: 0; }
+
+  /* 플레이어 카드 */
+  .player { display: grid; grid-template-columns: 140px 1fr; gap: 20px; align-items: start; }
+  .portrait { background: var(--bg); border: var(--px) solid var(--hi); padding: 10px; text-align: center; }
+  .portrait svg { width: 100%; height: auto; display: block; }
+  .portrait .p1 { display: block; margin-top: 8px; color: var(--hi); font-size: 13px; }
+  .name { font-family: "Galmuri14", "Galmuri11", monospace; font-size: 26px; margin: 0; }
+  .class { color: var(--mp); margin: 2px 0 14px; }
+  .stat-title { color: var(--hot); font-size: 14px; letter-spacing: 2px; margin: 16px 0 6px; }
+  .exp { list-style: none; margin: 0; padding: 0; }
+  .exp li { display: grid; grid-template-columns: 150px 1fr; gap: 12px; padding: 6px 0; border-bottom: 2px dashed var(--line); }
+  .exp li:last-child { border-bottom: 0; }
+  .exp .when { color: var(--dim); font-size: 13px; }
+  .exp .org { color: var(--hi); }
+  @media (max-width: 560px) {
+    .player { grid-template-columns: 1fr; }
+    .portrait { max-width: 160px; }
+    .exp li { grid-template-columns: 1fr; gap: 0; }
+  }
+
+  /* 미션 로그 */
+  .log { list-style: none; margin: 0; padding: 0; }
+  .log li { padding-left: 28px; position: relative; margin: 10px 0; }
+  .log li::before { content: "▶"; position: absolute; left: 0; color: var(--hot); }
+
+  /* 스킬 슬롯 */
+  .skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .skill .slot {
+    display: inline-block; font-size: 13px; color: #000; background: var(--mp);
+    padding: 2px 8px; margin-bottom: 10px;
+  }
+  .skill ul { margin: 10px 0 0; padding-left: 18px; color: var(--dim); }
+
+  /* 업적 */
+  .badges { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .badge { display: flex; gap: 14px; align-items: flex-start; }
+  .badge .icon {
+    flex: none; width: 44px; height: 44px; display: grid; place-items: center;
+    background: var(--hi); color: #000; font-size: 22px; border: var(--px) solid #000;
+  }
+
+  /* 파트너 */
+  .party { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+  .member { border-left: calc(var(--px) * 2) solid var(--hp); }
+  .member .role { color: var(--dim); font-size: 14px; }
+
+  /* 다음 스테이지 */
+  .next { text-align: center; }
+  .btn {
+    display: inline-block; margin-top: 16px; padding: 12px 22px;
+    background: var(--hot); color: #fff; text-decoration: none;
+    border: var(--px) solid #000; box-shadow: var(--px) var(--px) 0 #000;
+  }
+  .btn:active { transform: translate(var(--px), var(--px)); box-shadow: none; }
+  .soon { display: block; margin-top: 10px; color: var(--dim); font-size: 14px; }
+
+  footer { padding: 40px 16px 56px; text-align: center; color: var(--dim); font-size: 13px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .start { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="title">
+  <div>
+    <h1 class="logo">AIZENT</h1>
+    <p class="corp">주식회사 에이전트</p>
+    <div class="msg">돌봄 현장을 디지털 헬스케어 허브로</div>
+
+    <!-- 스마트워커 캐릭터 (8비트 픽셀) -->
+    <svg class="sprite" viewBox="0 0 20 20" shape-rendering="crispEdges" role="img" aria-label="스마트워커 픽셀 캐릭터">
+      <rect x="4" y="2" width="12" height="2" fill="#ffd84a"/>
+      <rect x="4" y="4" width="2" height="10" fill="#ffd84a"/>
+      <rect x="14" y="4" width="2" height="10" fill="#ffd84a"/>
+      <rect x="6" y="8" width="8" height="2" fill="#ffd84a"/>
+      <rect x="7" y="4" width="6" height="3" fill="#4ac8ff"/>
+      <rect x="8" y="5" width="1" height="1" fill="#14102a"/>
+      <rect x="11" y="5" width="1" height="1" fill="#14102a"/>
+      <rect x="4" y="14" width="2" height="2" fill="#a9a2d6"/>
+      <rect x="14" y="14" width="2" height="2" fill="#a9a2d6"/>
+      <rect x="3" y="16" width="4" height="2" fill="#f4f1ff"/>
+      <rect x="13" y="16" width="4" height="2" fill="#f4f1ff"/>
+      <rect x="16" y="1" width="2" height="2" fill="#ff5c8a"/>
+    </svg>
+
+    <a class="start" href="#player">▶ PRESS START</a>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="stage" id="player">
+    <p class="label">PLAYER SELECT</p>
+    <h2>PLAYER</h2>
+    <div class="window player">
+      <div class="portrait">
+        <svg viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="대표 픽셀 캐릭터">
+          <rect x="4" y="1" width="8" height="3" fill="#2b2240"/>
+          <rect x="4" y="4" width="8" height="5" fill="#f2c9a0"/>
+          <rect x="6" y="6" width="1" height="1" fill="#14102a"/>
+          <rect x="9" y="6" width="1" height="1" fill="#14102a"/>
+          <rect x="7" y="8" width="2" height="1" fill="#c0806a"/>
+          <rect x="3" y="10" width="10" height="5" fill="#4ac8ff"/>
+          <rect x="7" y="10" width="2" height="3" fill="#f4f1ff"/>
+          <rect x="7" y="11" width="2" height="2" fill="#ff5c8a"/>
+        </svg>
+        <span class="p1">1P</span>
+      </div>
+      <div>
+        <p class="name">김종석</p>
+        <p class="class">CLASS · 대표이사 (CEO)</p>
+
+        <p class="stat-title">ORIGIN</p>
+        <ul class="exp">
+          <li><span class="when">2011 ~ 2020</span><span><span class="org">서울대학교</span> 자유전공학부 졸업</span></li>
+          <li><span class="when">2025 ~ 현재</span><span><span class="org">KAIST</span> 기술경영전문대학원 석사과정</span></li>
+        </ul>
+
+        <p class="stat-title">EXP LOG</p>
+        <ul class="exp">
+          <li><span class="when">2022.08 ~ 2022.12</span><span><span class="org">학교안전공제중앙회</span> 재난상황 대비 학교환경 교육용 시뮬레이션 PM</span></li>
+          <li><span class="when">2022.09 ~ 2023.01</span><span><span class="org">한국문화재재단</span> 남원 광한루원 체험형 시뮬레이션 제작 PM</span></li>
+          <li><span class="when">2022.11 ~ 2023.02</span><span><span class="org">한국건강증진개발원</span> 구강건강 교육 3D 시뮬레이션 PM</span></li>
+          <li><span class="when">2023.09 ~ 2024.05</span><span><span class="org">주식회사 엔쓰리엔</span> 가정용 반려AI 디바이스 신사업본부 본부장</span></li>
+          <li><span class="when"></span><span><span class="org">심평원</span> AI 총괄, AI 시스템 구축 실무 총괄</span></li>
+          <li><span class="when"></span><span><span class="org">스마트 공장 AX</span> 하드웨어 기반 스마트 공장 AX 프로젝트 총괄</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="stage" id="mission">
+    <p class="label">STAGE 1 · MISSION</p>
+    <h2>MISSION</h2>
+    <div class="window">
+      <h3>세계의 문제</h3>
+      <ul class="log">
+        <li>고령화로 돌봄 수요는 계속 늘지만, 돌봄 인력과 서비스의 질은 그만큼 따라가지 못한다.</li>
+        <li>요양기관은 보조금에 기대는 수익 구조라 요양보호사 처우를 개선할 여력이 적다.</li>
+        <li>보험사는 손해율이 오르면서 내부 데이터를 보완할 외부 건강데이터가 필요하다.</li>
+      </ul>
+    </div>
+    <div class="window">
+      <h3>우리의 해법</h3>
+      <p>온디바이스 AI 스마트워커(보행기)가 노인의 걸음을 안전하게 돕고, 그 과정에서 생기는 보행·생활 데이터(개인생성건강데이터, PGHD)를 보험과 시니어 케어 분석에 쓸 수 있는 데이터로 바꾼다.</p>
+    </div>
+  </section>
+
+  <section class="stage" id="skills">
+    <p class="label">STAGE 2 · SKILLS</p>
+    <h2>SKILLS</h2>
+    <div class="skills">
+      <div class="window skill">
+        <span class="slot">SKILL 1</span>
+        <h3>장애물·단차 감지</h3>
+        <ul>
+          <li>Depth 인식 기반 전방 장애물·단차 감지</li>
+          <li>Depth map 기반 속도 제어와 이동경로 최적화</li>
+        </ul>
+      </div>
+      <div class="window skill">
+        <span class="slot">SKILL 2</span>
+        <h3>충돌 회피</h3>
+        <ul>
+          <li>MOT(다중 객체 추적) 알고리즘</li>
+          <li>다중 객체 충돌 위험 회피와 안전 보행 유도</li>
+        </ul>
+      </div>
+      <div class="window skill">
+        <span class="slot">SKILL 3</span>
+        <h3>도심 고정밀 측위</h3>
+        <ul>
+          <li>GPS와 센서 융합 기반 위치 확인</li>
+          <li>위험구간, 이동패턴, 이탈 여부 추적</li>
+        </ul>
+      </div>
+      <div class="window skill">
+        <span class="slot">SKILL 4</span>
+        <h3>낙상 감지·긴급 대응</h3>
+        <ul>
+          <li>낙상과 이상행동 실시간 감지</li>
+          <li>보호자·시설 관리자 즉시 알림</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="stage" id="achievements">
+    <p class="label">STAGE 3 · ACHIEVEMENTS</p>
+    <h2>ACHIEVEMENTS</h2>
+    <div class="badges">
+      <div class="window badge">
+        <div class="icon" aria-hidden="true">★</div>
+        <div>
+          <h3>TIPS R&amp;D</h3>
+          <p>팁스(TIPS) 창업기업 연구개발 일반트랙 선정</p>
+        </div>
+      </div>
+      <div class="window badge">
+        <div class="icon" aria-hidden="true">◆</div>
+        <div>
+          <h3>시드 투자</h3>
+          <p>킹슬리벤처스 시드 투자 유치</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stage" id="partners">
+    <p class="label">STAGE 4 · PARTNERS</p>
+    <h2>PARTNERS</h2>
+    <div class="party">
+      <div class="window member"><h3>연세대학교</h3><p class="role">노인활동기반 생성건강데이터셋 자문</p></div>
+      <div class="window member"><h3>아크헬스케어</h3><p class="role">실증 테스트베드 환경 제공</p></div>
+      <div class="window member"><h3>한국데이터소프트</h3><p class="role">PGHD 기반 AI 기술 고도화 협력</p></div>
+      <div class="window member"><h3>Entropy Paradox</h3><p class="role">UI/UX 기술개발 및 자문</p></div>
+      <div class="window member"><h3>아크시니어케어</h3><p class="role">실증 테스트베드 제공 협약(MOU)</p></div>
+    </div>
+  </section>
+
+  <section class="stage next" id="next">
+    <p class="label">NEXT STAGE</p>
+    <h2>공공 AX 지도</h2>
+    <p>나라장터 공공조달 데이터로 공공기관이 AI 전환(AX)을 얼마나, 어떻게 추진하는지 지도로 그린다.</p>
+    <a class="btn" href="/ax-map/">CONTINUE ▶</a>
+    <span class="soon">준비 중</span>
+  </section>
+
+</main>
+
+<footer>
+  KAIST 기술경영전문대학원 ITM.690 인공지능 경영과 법 · 실습 1 과제 페이지<br>
+  © 주식회사 에이전트 (AIZENT)
+</footer>
+
+</body>
+</html>
